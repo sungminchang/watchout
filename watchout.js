@@ -25,7 +25,7 @@ _.range = function(start, stop, step) {
 var gameOptions = {
   height: 400,
   width: 700,
-  nEnemies: 30,
+  nEnemies: 1,
   padding: 20,
   r: 25
 };
@@ -61,6 +61,7 @@ for (var i = 0; i < gameOptions.nEnemies; i++) {
 var d3enemies = d3.select("svg").selectAll("circle")
   .data(enemies)
   .enter().append("circle")
+  .attr("class", "enemy")
   .attr("cx", function (){
     return axes.x(xRandom())
   })
@@ -68,7 +69,7 @@ var d3enemies = d3.select("svg").selectAll("circle")
     return axes.y(yRandom())
   })
   .attr("r", gameOptions.r)
-  .style({fill: "yellow"});
+  .style({fill: "blue"});
 
 
 
@@ -85,22 +86,54 @@ setInterval(function() {
 
 
 var drag = d3.behavior.drag()
-  .on('dragstart', function() { player.style('fill', 'red'); })
-  .on('drag', function() { player.attr('cx', d3.event.x)
-                                .attr('cy', d3.event.y); })
-  .on('dragend', function() { player.style('fill', 'black'); });
+  // .on('dragstart', function() { player.style('fill', 'red'); })
+  .on('drag', function() {
+    player
+      .attr('cx', d3.event.x)
+      .attr('cy', d3.event.y);
+
+  // console.log(player.attr("cx"));
+  // console.log(player.attr("cy"));
+  // console.log("Enemy cx: " + d3enemies.attr("cx"));
+  // console.log("enemy cy: " + d3enemies.attr("cy"));
+  // console.log(player.attr("cy"));
+  // console.log("Enemy cx: " + d3enemies.attr("cx"));
+  // console.log("enemy cy: " + d3enemies.attr("cy"));
+
+  });
+  // .on('dragend', function() { player.style('fill', 'black'); });
 
 
+
+
+var playerPosition = function() {
+  console.log(player.attr("cx"));
+  console.log(player.attr("cy"));
+};
 
 var player = d3.select("svg")
   .append("circle")
   .attr("cx", function (){
-    return axes.x(xRandom())
+    return axes.x(50)
   })
   .attr("cy", function (){
-    return axes.y(yRandom())
+    return axes.y(50)
   })
   .attr("r", gameOptions.r)
   .style({fill: "red"})
   .call(drag);
+  // .call(detectCollision);
+
+// d3.timer(detectCollision, 1500);
+
+var detectCollision = function() {
+
+  var diffX = player.attr("cx") - d3enemies.attr("cx");
+  var diffY = player.attr("cy") - d3enemies.attr("cy");
+  var distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
+
+  if (distance <= 50) {
+    console.log("collision");
+  }
+}
 
