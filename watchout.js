@@ -137,3 +137,5 @@ var detectCollision = function() {
   }
 }
 
+d3.timer(detectCollision);
+
