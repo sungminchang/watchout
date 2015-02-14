@@ -51,12 +51,7 @@ var yRandom = function(){
   return (Math.random() * 100) + 1;
 }
 
-var move = function (enemy, xPos, yPos) {
-  enemy.transition()
-  .attr('cx', axes.x(xRandom()))
-  .attr('cy', axes.y(yRandom()));
 
-};
 
 var enemies = [];
 for (var i = 0; i < gameOptions.nEnemies; i++) {
@@ -87,3 +82,25 @@ setInterval(function() {
   })
 
 }, 1500);
+
+
+var drag = d3.behavior.drag()
+  .on('dragstart', function() { player.style('fill', 'red'); })
+  .on('drag', function() { player.attr('cx', d3.event.x)
+                                .attr('cy', d3.event.y); })
+  .on('dragend', function() { player.style('fill', 'black'); });
+
+
+
+var player = d3.select("svg")
+  .append("circle")
+  .attr("cx", function (){
+    return axes.x(xRandom())
+  })
+  .attr("cy", function (){
+    return axes.y(yRandom())
+  })
+  .attr("r", gameOptions.r)
+  .style({fill: "red"})
+  .call(drag);
+
