@@ -15,19 +15,16 @@ _.range = function(start, stop, step) {
     for (var idx = 0; idx < length; idx++, start += step) {
       range[idx] = start;
     }
-
     return range;
   };
-
-
-
 
 var gameOptions = {
   height: 400,
   width: 700,
-  nEnemies: 10,
+  nEnemies: 30,
   padding: 20,
-  r: 25
+  duration: 1500,
+  r: 10
 };
 
 var axes = {
@@ -43,23 +40,12 @@ var gameBoard = d3.select("body").append("svg:svg")
           "background-color": "#ccc"});
 
 
-var xRandom = function(){
-  return (Math.random() * 100) + 1;
-}
+var xRandom = function(){ return (Math.random() * 100) + 1;}
 
-var yRandom = function(){
-  return (Math.random() * 100) + 1;
-}
-
-
-
-var enemies = [];
-for (var i = 0; i < gameOptions.nEnemies; i++) {
-  enemies.push(i);
-}
+var yRandom = function(){ return (Math.random() * 100) + 1;}
 
 var d3enemies = d3.select("svg").selectAll("circle")
-  .data(enemies)
+  .data(d3.range(gameOptions.nEnemies))
   .enter().append("circle")
   .attr("class", "enemy")
   .attr("cx", function (){
@@ -69,21 +55,22 @@ var d3enemies = d3.select("svg").selectAll("circle")
     return axes.y(yRandom())
   })
   .attr("r", gameOptions.r)
-  .style({fill: "blue"});
+  .style({fill: "blue"
+});
 
-
-
-setInterval(function() {
-  d3enemies.transition().duration(1500)
+var move = function() {
+  return d3enemies.transition().duration(gameOptions.duration)
     .attr("cx", function (){
     return axes.x(xRandom())
     })
   .attr("cy", function (){
     return axes.y(yRandom())
+  }).each('end', function() {
+    move(d3.select(this));
   })
+};
 
-}, 1500);
-
+d3.timer(move);
 
 var drag = d3.behavior.drag()
   // .on('dragstart', function() { player.style('fill', 'red'); })
@@ -136,7 +123,7 @@ var detectCollision = function() {
     var diffY = player.attr("cy") - this.getAttribute("cy");
     var distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
 
-    if (distance <= 50) {
+    if (distance <= 2 * gameOptions.r) {
       collision = true;
     }
 
