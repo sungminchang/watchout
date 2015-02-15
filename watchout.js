@@ -25,7 +25,7 @@ _.range = function(start, stop, step) {
 var gameOptions = {
   height: 400,
   width: 700,
-  nEnemies: 1,
+  nEnemies: 10,
   padding: 20,
   r: 25
 };
@@ -126,15 +126,26 @@ var player = d3.select("svg")
 
 // d3.timer(detectCollision, 1500);
 
+var prevCollision = false;
 var detectCollision = function() {
 
-  var diffX = player.attr("cx") - d3enemies.attr("cx");
-  var diffY = player.attr("cy") - d3enemies.attr("cy");
-  var distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
+  var collision = false;
 
-  if (distance <= 50) {
-    console.log("collision");
+  d3enemies.each(function() {
+    var diffX = player.attr("cx") - this.getAttribute("cx");
+    var diffY = player.attr("cy") - this.getAttribute("cy");
+    var distance = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
+
+    if (distance <= 50) {
+      collision = true;
+    }
+
+  });
+
+  if ((collision !== prevCollision) && collision) {
+    console.log("collision!");
   }
+  prevCollision = collision;
 }
 
 d3.timer(detectCollision);
