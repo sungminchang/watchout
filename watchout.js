@@ -40,6 +40,26 @@ var gameBoard = d3.select("body").append("svg:svg")
           "background-color": "#ccc"});
 
 
+var increaseScore = function() {
+  var scoreBoard = d3.select('.current span');
+  var score = scoreBoard.text();
+  score++;
+  scoreBoard.text(score)
+};
+
+var getHighScore = function() {
+  var highBoard = d3.select('.high span')
+  var highScore = highBoard.text();
+  var score = d3.select('.current span').text();
+
+  if (score > highScore) {
+    highBoard.text(score);
+  }
+};
+
+setInterval(increaseScore, 100)
+
+
 var xRandom = function(){ return (Math.random() * 100) + 1;}
 
 var yRandom = function(){ return (Math.random() * 100) + 1;}
@@ -103,6 +123,10 @@ var detectCollision = function() {
 
     if (distance <= 2 * gameOptions.r) {
       collision = true;
+
+      var collisions = d3.select('.collisions span').text();
+      collisions++;
+      d3.select('.collisions span').text(collisions);
     }
 
   });
@@ -114,4 +138,5 @@ var detectCollision = function() {
 }
 
 d3.timer(detectCollision);
+
 
