@@ -58,8 +58,8 @@ var d3enemies = d3.select("svg").selectAll("circle")
   .style({fill: "blue"
 });
 
-var move = function() {
-  return d3enemies.transition().duration(gameOptions.duration)
+var move = function(element) {
+  return element.transition().duration(gameOptions.duration)
     .attr("cx", function (){
     return axes.x(xRandom())
     })
@@ -70,33 +70,14 @@ var move = function() {
   })
 };
 
-d3.timer(move);
+move(d3enemies);
 
 var drag = d3.behavior.drag()
-  // .on('dragstart', function() { player.style('fill', 'red'); })
   .on('drag', function() {
     player
       .attr('cx', d3.event.x)
       .attr('cy', d3.event.y);
-
-  // console.log(player.attr("cx"));
-  // console.log(player.attr("cy"));
-  // console.log("Enemy cx: " + d3enemies.attr("cx"));
-  // console.log("enemy cy: " + d3enemies.attr("cy"));
-  // console.log(player.attr("cy"));
-  // console.log("Enemy cx: " + d3enemies.attr("cx"));
-  // console.log("enemy cy: " + d3enemies.attr("cy"));
-
   });
-  // .on('dragend', function() { player.style('fill', 'black'); });
-
-
-
-
-var playerPosition = function() {
-  console.log(player.attr("cx"));
-  console.log(player.attr("cy"));
-};
 
 var player = d3.select("svg")
   .append("circle")
@@ -109,9 +90,6 @@ var player = d3.select("svg")
   .attr("r", gameOptions.r)
   .style({fill: "red"})
   .call(drag);
-  // .call(detectCollision);
-
-// d3.timer(detectCollision, 1500);
 
 var prevCollision = false;
 var detectCollision = function() {
